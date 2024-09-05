@@ -1,0 +1,14 @@
+[default]
+packages = [
+  "python3",
+  "gcc",
+  "libmysqlclient-dev",
+  "build-essential",
+  "pkg-config",
+  "libmariadb-dev",
+  "libmariadb-dev-compat"
+]
+
+[variables]
+MYSQLCLIENT_CFLAGS = "-I/usr/include/mariadb"
+MYSQLCLIENT_LDFLAGS = "-L/usr/lib/x86_64-linux-gnu -lmariadb"
