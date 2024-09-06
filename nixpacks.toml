@@ -6,7 +6,8 @@ packages = [
   "build-essential",
   "pkg-config",
   "libmariadb-dev",
-  "libmariadb-dev-compat"
+  "libmariadb-dev-compat",
+  "gunicorn"
 ]
 
 [variables]

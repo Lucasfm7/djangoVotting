@@ -20,7 +20,7 @@ flet==0.23.2
 flet-contrib==2024.3.6
 flet-core==0.23.2
 flet-runtime==0.23.2
-gunicorn
+gunicorn==20.1.0
 h11==0.14.0
 httpcore==1.0.5
 httptools==0.6.1
@@ -30,8 +30,7 @@ Jinja2==3.1.4
 markdown-it-py==3.0.0
 MarkupSafe==2.1.5
 mdurl==0.1.2
-mysql-connector-python==9.0.0
-mysqlclient>=2.0
+mysqlclient>=2.0  # Certifique-se de usar mysqlclient ao invés de mysql-connector
 numpy==2.0.0
 oauthlib==3.2.2
 openpyxl==3.1.5
