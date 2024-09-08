@@ -77,12 +77,12 @@ WSGI_APPLICATION = 'apiVotting.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'railway',
-        'USER': 'root',
-        'PASSWORD': 'RUiFcxbBhGwfmtRRDuJRIYdwFBukLLaO',
-        'HOST': 'junction.proxy.rlwy.net',
-        'PORT': '15734',
+        'ENGINE': 'mysql.connector.django',
+        'NAME': 'railway',  # Substitua pelo nome real do seu banco de dados
+        'USER': 'root',        # Substitua pelo seu nome de usuário MySQL
+        'PASSWORD': 'RUiFcxbBhGwfmtRRDuJRIYdwFBukLLaO',      # Substitua pela sua senha MySQL
+        'HOST': 'junction.proxy.rlwy.net',  # Verifique se este é realmente o host correto
+        'PORT': '15734',                    # Porta padrão do MySQL, altere se for diferente
     }
 }
 
