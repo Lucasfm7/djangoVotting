@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'apiVotting.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'mysql.connector.django',
         'NAME': 'railway',  # Substitua pelo nome real do seu banco de dados
         'USER': 'root',        # Substitua pelo seu nome de usuário MySQL
         'PASSWORD': 'RUiFcxbBhGwfmtRRDuJRIYdwFBukLLaO',      # Substitua pela sua senha MySQL
