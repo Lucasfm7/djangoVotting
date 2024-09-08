@@ -53,6 +53,10 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "https://django-server-production-f3c5.up.railway.app",
+]
+
 ROOT_URLCONF = 'apiVotting.urls'
 
 TEMPLATES = [
