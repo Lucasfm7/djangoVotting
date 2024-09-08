@@ -2,11 +2,11 @@
 packages = [
   "python3",
   "gcc",
-  "libmysqlclient-dev",      # Inclui as bibliotecas de desenvolvimento do MySQL
-  "build-essential",         # Ferramentas essenciais para compilar pacotes
-  "libmariadb-dev",          # Alternativa ao MySQL
-  "libmariadb-dev-compat",   # Pacotes de compatibilidade para MariaDB
-  "pkg-config"               # Ferramenta que ajuda na localização de pacotes
+  "libmysqlclient-dev",
+  "build-essential",
+  "pkg-config",
+  "libmariadb-dev",
+  "libmariadb-dev-compat"
 ]
 
 [variables]
