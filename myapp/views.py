@@ -65,3 +65,27 @@ class PessoaViewSet(viewsets.ModelViewSet):
                 return Response(serializer.data)
             return Response({"detail": "Pessoa não encontrada."}, status=404)
         return Response({"detail": "CPF não fornecido."}, status=400)
+    
+class PesquisarPessoaPorCPFAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        # Obtém o CPF dos parâmetros da URL
+        cpf = request.query_params.get('cpf')
+
+        if not cpf:
+            return Response(
+                {"error": "O campo 'cpf' é obrigatório."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Pesquisa a pessoa com o CPF fornecido
+        pessoa = Pessoa.objects.filter(cpf=cpf).first()
+
+        if pessoa:
+            # Serializa a instância da Pessoa encontrada
+            serializer = PessoaSerializer(pessoa)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {"error": "Pessoa não encontrada."},
+                status=status.HTTP_404_NOT_FOUND
+            )
