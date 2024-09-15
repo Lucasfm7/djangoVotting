@@ -55,6 +55,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "https://django-server-production-f3c5.up.railway.app",
+    "http://127.0.0.1:8000",  # Para desenvolvimento local
 ]
 
 ROOT_URLCONF = 'apiVotting.urls'
@@ -84,13 +85,18 @@ WSGI_APPLICATION = 'apiVotting.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'mysql.connector.django',
-        'NAME': 'railway',  # Substitua pelo nome real do seu banco de dados
-        'USER': 'root',        # Substitua pelo seu nome de usuário MySQL
-        'PASSWORD': 'RUiFcxbBhGwfmtRRDuJRIYdwFBukLLaO',      # Substitua pela sua senha MySQL
-        'HOST': 'junction.proxy.rlwy.net',  # Verifique se este é realmente o host correto
-        'PORT': '15734',                    # Porta padrão do MySQL, altere se for diferente
+        'NAME': 'railway',
+        'USER': 'root',
+        'PASSWORD': 'RUiFcxbBhGwfmtRRDuJRIYdwFBukLLaO',
+        'HOST': 'junction.proxy.rlwy.net',
+        'PORT': '15734',
+        'OPTIONS': {
+            'connect_timeout': 10,  # Timeout de conexão
+            'use_pure': True,  # Use o driver Python puro
+        },
     }
 }
+
 
 
 # Password validation
