@@ -22,7 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'myapp',
     'rest_framework',
-    'rest_framework.authtoken',  # Adiciona autenticação por token
+    'rest_framework.authtoken',  # Adicione esta linha
     'corsheaders',
 ]
 
