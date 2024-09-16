@@ -10,6 +10,8 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-0(0m49aqp^0pnr=tabh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 
+WSGI_APPLICATION = 'apiVotting.wsgi.application'
+
 ALLOWED_HOSTS = ['django-server-production-f3c5.up.railway.app', '127.0.0.1']
 
 # Application definition
