@@ -14,7 +14,7 @@ WSGI_APPLICATION = 'apiVotting.wsgi.application'
 
 ROOT_URLCONF = 'apiVotting.urls'
 
-ALLOWED_HOSTS = ['django-server-production-f3c5.up.railway.app', '127.0.0.1']
+ALLOWED_HOSTS = ['django-server-production-f3c5.up.railway.app', '127.0.0.1', 'localhost']
 
 # Application definition
 INSTALLED_APPS = [
@@ -41,28 +41,33 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Definir CORS e CSRF mais restritos em produção
 CORS_ALLOWED_ORIGINS = [
-    "https://django-server-production-f3c5.up.railway.app",
-    "http://127.0.0.1:8000",
+    "http://127.0.0.1:8000",  # Certifique-se de adicionar o domínio do front-end
+    "http://localhost:8000",
+    "http://localhost:3000",  # Ou a porta do front-end
+    "https://django-server-production-f3c5.up.railway.app",  # Domínio do backend no Railway
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
+
+# Configurações de CSRF
 CSRF_TRUSTED_ORIGINS = [
     "https://django-server-production-f3c5.up.railway.app",
+    "http://localhost:8000",
 ]
 
 CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 
 CORS_ALLOW_HEADERS = [
-    "accept",
-    "accept-encoding",
-    "authorization",
-    "content-type",
-    "dnt",
-    "origin",
-    "user-agent",
-    "x-csrftoken",
-    "x-requested-with",
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
 ]
 
 # Database configuration (use environment variables for security)
