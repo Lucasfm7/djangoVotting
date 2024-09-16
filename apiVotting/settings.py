@@ -43,10 +43,11 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "https://django-server-production-f3c5.up.railway.app",
     "http://127.0.0.1:8000",
-    "http://localhost:8000",
 ]
 
-CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
+CSRF_TRUSTED_ORIGINS = [
+    "https://django-server-production-f3c5.up.railway.app",
+]
 
 CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 
