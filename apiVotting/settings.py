@@ -24,7 +24,10 @@ SECRET_KEY = 'django-insecure-0(0m49aqp^0pnr=tabh25rxm!4f6+_6fp_w@m(&fq0d)(er73f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['django-server-production-f3c5.up.railway.app', '127.0.0.1']
+ALLOWED_HOSTS = [
+    # 'django-server-production-f3c5.up.railway.app', 
+    # '127.0.0.1'
+]
 
 # Application definition
 
@@ -52,10 +55,10 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://django-server-production-f3c5.up.railway.app",
-    "http://127.0.0.1:8000",  # Para desenvolvimento local
-    "http://localhost:8000",
-    "http://localhost:3000",  # ou outro domínio do frontend
+    # "https://django-server-production-f3c5.up.railway.app",
+    # "http://127.0.0.1:8000",  # Para desenvolvimento local
+    # "http://localhost:8000",
+    # "http://localhost:3000",  # ou outro domínio do frontend
 ]
 
 # Permitir todos os métodos, incluindo OPTIONS para requisições preflight
