@@ -98,15 +98,12 @@ TEMPLATES = [
 ]
 
 
-# DRF - Permissões e Autenticação
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',  # Exige autenticação para todas as requisições
+        'rest_framework.permissions.AllowAny',  # Permite o acesso sem autenticação
     ],
 }
+
 
 # Segurança de senha e criptografia
 AUTH_PASSWORD_VALIDATORS = [
