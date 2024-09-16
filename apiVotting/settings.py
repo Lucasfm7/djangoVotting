@@ -56,6 +56,8 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "https://django-server-production-f3c5.up.railway.app",
     "http://127.0.0.1:8000",  # Para desenvolvimento local
+    "http://localhost:8000",
+    "http://localhost:3000",  # ou outro domínio do frontend    
 ]
 
 ROOT_URLCONF = 'apiVotting.urls'
