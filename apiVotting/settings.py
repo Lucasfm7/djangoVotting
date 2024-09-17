@@ -46,6 +46,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://localhost:3000",  # Ou a porta do front-end
     "https://django-server-production-f3c5.up.railway.app",  # Domínio do backend no Railway
+    "https://fasthtml-server-production-7db6.up.railway.app",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
