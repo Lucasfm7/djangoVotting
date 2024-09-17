@@ -14,7 +14,7 @@ WSGI_APPLICATION = 'apiVotting.wsgi.application'
 
 ROOT_URLCONF = 'apiVotting.urls'
 
-ALLOWED_HOSTS = ['django-server-production-f3c5.up.railway.app', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['django-server-production-f3c5.up.railway.app', '127.0.0.1', 'localhost','https://fasthtml-server-production-7db6.up.railway.app']
 
 # Application definition
 INSTALLED_APPS = [
