@@ -1,7 +1,9 @@
+# myproject/urls.py
+
 from django.contrib import admin
-from django.urls import path, include  # Importe a função `include`
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('myapp.urls')),  # Inclua as URLs do seu aplicativo `myapp`
+    path('api/', include('myapp.urls')),  # Prefixo 'api/' para os endpoints
 ]
