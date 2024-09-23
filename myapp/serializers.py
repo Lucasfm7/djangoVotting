@@ -1,7 +1,7 @@
 # myapp/serializers.py
 
 from rest_framework import serializers
-from .models import Pessoa, Candidate, Vote
+from .models import Pessoa, Candidate, Vote, VerificationCode
 
 class PessoaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -42,3 +42,9 @@ class VoteSerializer(serializers.ModelSerializer):
             defaults={'candidate': candidate}
         )
         return vote
+
+class VerificationCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VerificationCode
+        fields = ['phone_number', 'code', 'is_verified']
+        read_only_fields = ['is_verified']

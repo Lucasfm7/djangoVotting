@@ -1,6 +1,7 @@
 # myapp/models.py
 
 from django.db import models
+from django.utils import timezone
 
 class Pessoa(models.Model):
     nome = models.CharField(max_length=255)
@@ -24,3 +25,17 @@ class Vote(models.Model):
 
     def __str__(self):
         return f"Voto de {self.pessoa.nome} para {self.candidate.nome}"
+
+class VerificationCode(models.Model):
+    phone_number = models.CharField(max_length=20, unique=True)
+    code = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_verified = models.BooleanField(default=False)
+    
+    def is_expired(self):
+        # Define o tempo de expiração para o código (exemplo: 10 minutos)
+        expiration_time = self.created_at + timezone.timedelta(minutes=3)
+        return timezone.now() > expiration_time
+
+    def __str__(self):
+        return f"VerificationCode(phone_number={self.phone_number}, code={self.code})"
