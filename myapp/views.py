@@ -1,7 +1,7 @@
 # myapp/views.py
 
 from rest_framework import viewsets, status
-from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -19,7 +19,7 @@ import os
 import random
 import logging
 from django.utils import timezone
-from django.db.models import Count
+from django.db.models import Count, F
 
 # Configurar o logger
 logger = logging.getLogger(__name__)
@@ -41,7 +41,7 @@ class PessoaViewSet(viewsets.ModelViewSet):
         return Response({"error": "A atualização de CPFs não é permitida."}, status=status.HTTP_403_FORBIDDEN)
 
     # Permitir apenas a pesquisa por CPF
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], url_path='pesquisar_cpf')
     def pesquisar_cpf(self, request):
         cpf = request.query_params.get('cpf', None)
         if not cpf:
@@ -80,31 +80,44 @@ class VoteViewSet(viewsets.ModelViewSet):
         """
         Retorna a quantidade de votos por candidato.
         """
-        resultados = Vote.objects.values('candidate__nome').annotate(total_votos=Count('id')).order_by('-total_votos')
-        serializer = CandidateResultSerializer(resultados, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            resultados = Vote.objects.annotate(
+                candidate_nome=F('candidate__nome')
+            ).values('candidate_nome').annotate(
+                total_votos=Count('id')
+            ).order_by('-total_votos')
+
+            serializer = CandidateResultSerializer(resultados, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"Erro em resultados_candidatos: {str(e)}")
+            return Response({"detail": "Erro interno do servidor."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(detail=False, methods=['get'], url_path='percentual_votantes')
     def percentual_votantes(self, request):
         """
         Calcula o percentual de pessoas que votaram em relação ao total de pessoas.
         """
-        total_pessoas = Pessoa.objects.count()
-        total_votantes = Vote.objects.count()
+        try:
+            total_pessoas = Pessoa.objects.count()
+            total_votantes = Vote.objects.count()
 
-        if total_pessoas == 0:
-            percentual = 0
-        else:
-            percentual = (total_votantes / total_pessoas) * 100
+            if total_pessoas == 0:
+                percentual = 0
+            else:
+                percentual = (total_votantes / total_pessoas) * 100
 
-        resultado = {
-            "total_pessoas": total_pessoas,
-            "total_votantes": total_votantes,
-            "percentual_votantes": round(percentual, 2)
-        }
+            resultado = {
+                "total_pessoas": total_pessoas,
+                "total_votantes": total_votantes,
+                "percentual_votantes": round(percentual, 2)
+            }
 
-        serializer = VotantesPercentualSerializer(resultado)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            serializer = VotantesPercentualSerializer(resultado)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"Erro em percentual_votantes: {str(e)}")
+            return Response({"detail": "Erro interno do servidor."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class SendSMSView(APIView):
     """
@@ -215,3 +228,51 @@ class VerifyCodeView(APIView):
 
         logger.info(f"Código de verificação para {phone_number} foi verificado com sucesso.")
         return Response({"detail": "Código verificado com sucesso."}, status=status.HTTP_200_OK)
+
+class ResultadosCandidatosView(APIView):
+    """
+    API para obter a quantidade de votos por candidato.
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request, format=None):
+        try:
+            resultados = Vote.objects.annotate(
+                candidate_nome=F('candidate__nome')
+            ).values('candidate_nome').annotate(
+                total_votos=Count('id')
+            ).order_by('-total_votos')
+
+            serializer = CandidateResultSerializer(resultados, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"Erro em resultados_candidatos: {str(e)}")
+            return Response({"detail": "Erro interno do servidor."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class PercentualVotantesView(APIView):
+    """
+    API para calcular o percentual de pessoas que votaram.
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request, format=None):
+        try:
+            total_pessoas = Pessoa.objects.count()
+            total_votantes = Vote.objects.count()
+
+            if total_pessoas == 0:
+                percentual = 0
+            else:
+                percentual = (total_votantes / total_pessoas) * 100
+
+            resultado = {
+                "total_pessoas": total_pessoas,
+                "total_votantes": total_votantes,
+                "percentual_votantes": round(percentual, 2)
+            }
+
+            serializer = VotantesPercentualSerializer(resultado)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"Erro em percentual_votantes: {str(e)}")
+            return Response({"detail": "Erro interno do servidor."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
