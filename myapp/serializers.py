@@ -11,7 +11,7 @@ class PessoaSerializer(serializers.ModelSerializer):
 class CandidateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Candidate
-        fields = ['id', 'nome']  # Removido 'partido'
+        fields = ['id', 'nome']
 
 class VoteSerializer(serializers.ModelSerializer):
     pessoa = PessoaSerializer(read_only=True)
@@ -48,3 +48,12 @@ class VerificationCodeSerializer(serializers.ModelSerializer):
         model = VerificationCode
         fields = ['phone_number', 'code', 'is_verified']
         read_only_fields = ['is_verified']
+
+class CandidateResultSerializer(serializers.Serializer):
+    candidate_nome = serializers.CharField()
+    total_votos = serializers.IntegerField()
+
+class VotantesPercentualSerializer(serializers.Serializer):
+    total_pessoas = serializers.IntegerField()
+    total_votantes = serializers.IntegerField()
+    percentual_votantes = serializers.FloatField()

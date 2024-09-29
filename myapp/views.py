@@ -10,13 +10,16 @@ from .serializers import (
     PessoaSerializer, 
     CandidateSerializer, 
     VoteSerializer, 
-    VerificationCodeSerializer
+    VerificationCodeSerializer,
+    CandidateResultSerializer,
+    VotantesPercentualSerializer
 )
 from twilio.rest import Client
 import os
 import random
 import logging
 from django.utils import timezone
+from django.db.models import Count
 
 # Configurar o logger
 logger = logging.getLogger(__name__)
@@ -71,6 +74,37 @@ class VoteViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         vote = serializer.save()
         return Response(VoteSerializer(vote).data, status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=['get'], url_path='resultados_candidatos')
+    def resultados_candidatos(self, request):
+        """
+        Retorna a quantidade de votos por candidato.
+        """
+        resultados = Vote.objects.values('candidate__nome').annotate(total_votos=Count('id')).order_by('-total_votos')
+        serializer = CandidateResultSerializer(resultados, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['get'], url_path='percentual_votantes')
+    def percentual_votantes(self, request):
+        """
+        Calcula o percentual de pessoas que votaram em relação ao total de pessoas.
+        """
+        total_pessoas = Pessoa.objects.count()
+        total_votantes = Vote.objects.count()
+
+        if total_pessoas == 0:
+            percentual = 0
+        else:
+            percentual = (total_votantes / total_pessoas) * 100
+
+        resultado = {
+            "total_pessoas": total_pessoas,
+            "total_votantes": total_votantes,
+            "percentual_votantes": round(percentual, 2)
+        }
+
+        serializer = VotantesPercentualSerializer(resultado)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class SendSMSView(APIView):
     """

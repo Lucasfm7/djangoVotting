@@ -1,3 +1,5 @@
+# myapp/urls.py
+
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import PessoaViewSet, CandidateViewSet, VoteViewSet, SendSMSView, SendVerificationCodeView, VerifyCodeView
