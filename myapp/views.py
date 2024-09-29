@@ -278,9 +278,11 @@ class PercentualVotantesView(APIView):
             logger.error(f"Erro em percentual_votantes: {str(e)}")
             return Response({"detail": "Erro interno do servidor."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+from django.views.decorators.csrf import csrf_exempt
 class AdminLoginView(APIView):
     permission_classes = [AllowAny]
 
+    @csrf_exempt  # Desabilita a verificação CSRF para esta view
     def post(self, request, format=None):
         username = request.data.get('username')
         password = request.data.get('password')
@@ -293,7 +295,6 @@ class AdminLoginView(APIView):
         except AdminUser.DoesNotExist:
             return Response({"detail": "Usuário ou senha inválidos."}, status=status.HTTP_401_UNAUTHORIZED)
 
-        # Comparação direta da senha em texto puro
         if admin_user.password == password:
             return Response({"success": True, "message": "Login bem-sucedido."}, status=status.HTTP_200_OK)
         else:
