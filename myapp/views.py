@@ -279,39 +279,22 @@ class PercentualVotantesView(APIView):
             return Response({"detail": "Erro interno do servidor."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class AdminLoginView(APIView):
-    """
-    API View para autenticação de administrador.
-    """
     permission_classes = [AllowAny]
 
     def post(self, request, format=None):
         username = request.data.get('username')
         password = request.data.get('password')
 
-        # Verifica se ambos os campos foram fornecidos
         if not username or not password:
-            return Response(
-                {"detail": "Usuário e senha são obrigatórios."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": "Usuário e senha são obrigatórios."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             admin_user = AdminUser.objects.get(username=username)
         except AdminUser.DoesNotExist:
-            return Response(
-                {"detail": "Usuário ou senha inválidos."},
-                status=status.HTTP_401_UNAUTHORIZED
-            )
+            return Response({"detail": "Usuário ou senha inválidos."}, status=status.HTTP_401_UNAUTHORIZED)
 
-        if admin_user.check_password(password):
-            # Autenticação bem-sucedida
-            # Aqui você pode implementar geração de token JWT ou sessão
-            return Response(
-                {"success": True, "message": "Login bem-sucedido."},
-                status=status.HTTP_200_OK
-            )
+        # Comparação direta da senha em texto puro
+        if admin_user.password == password:
+            return Response({"success": True, "message": "Login bem-sucedido."}, status=status.HTTP_200_OK)
         else:
-            return Response(
-                {"detail": "Usuário ou senha inválidos."},
-                status=status.HTTP_401_UNAUTHORIZED
-            )
+            return Response({"detail": "Usuário ou senha inválidos."}, status=status.HTTP_401_UNAUTHORIZED)
