@@ -64,17 +64,35 @@ class CandidateViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CandidateSerializer
 
 class VoteViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet para registrar votos.
+    """
     queryset = Vote.objects.all()
     serializer_class = VoteSerializer
-    permission_classes = [AllowAny]  # Permite acesso sem autenticação, ajuste conforme necessário
+    permission_classes = [AllowAny]  # Ajuste conforme necessário
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        cpf = serializer.validated_data.get('cpf')
+        
+        try:
+            pessoa = Pessoa.objects.get(cpf=cpf)
+        except Pessoa.DoesNotExist:
+            return Response({"detail": "Pessoa com o CPF fornecido não existe."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if pessoa.ja_votou:
+            return Response({"detail": "Esta pessoa já votou."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Se a pessoa ainda não votou, registre o voto
         vote = serializer.save()
-        print("Voto registrado:", vote)  # Adicione este print
+        
+        # Atualize o status da pessoa para indicar que já votou
+        pessoa.ja_votou = True
+        pessoa.save()
+        
+        # Serializar os dados do voto criado
         response_data = VoteSerializer(vote).data
-        print("Dados serializados:", response_data)  # Adicione este print
         return Response(response_data, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['get'], url_path='resultados_candidatos')

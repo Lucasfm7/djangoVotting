@@ -10,6 +10,7 @@ class Pessoa(models.Model):
     cpf = models.CharField(max_length=14, unique=True)
     empresa = models.CharField(max_length=255)
     segmento = models.CharField(max_length=255)
+    ja_votou = models.BooleanField(default=False)  # Novo campo adicionado
 
     def __str__(self):
         return self.nome
