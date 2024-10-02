@@ -6,7 +6,7 @@ from .models import Pessoa, Candidate, Vote, VerificationCode
 class PessoaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pessoa
-        fields = ['id', 'nome', 'cpf', 'empresa', 'segmento']
+        fields = ['id', 'nome', 'cpf', 'empresa', 'segmento', 'ja_votou']
 
 class CandidateSerializer(serializers.ModelSerializer):
     class Meta:
