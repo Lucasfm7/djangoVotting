@@ -25,9 +25,12 @@ class Vote(models.Model):
     pessoa = models.OneToOneField(Pessoa, on_delete=models.CASCADE, related_name='vote')
     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE, related_name='votes')
     timestamp = models.DateTimeField(auto_now=True)
+    nome = models.CharField(max_length=255, null=True, blank=True, default=None)
+    sobrenome = models.CharField(max_length=255, null=True, blank=True, default=None)
+    telefone = models.CharField(max_length=20, null=True, blank=True, default=None)
 
     def __str__(self):
-        return f"Voto de {self.pessoa.nome} para {self.candidate.nome}"
+        return f"Voto de {self.nome or self.pessoa.nome} {self.sobrenome or ''} para {self.candidate.nome}"
 
 class VerificationCode(models.Model):
     phone_number = models.CharField(max_length=20, unique=True)
