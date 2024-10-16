@@ -13,6 +13,8 @@ class CandidateSerializer(serializers.ModelSerializer):
         model = Candidate
         fields = ['id', 'nome']
 
+# myapp/serializers.py
+
 class VoteSerializer(serializers.ModelSerializer):
     pessoa = PessoaSerializer(read_only=True)
     candidate = CandidateSerializer(read_only=True)
@@ -38,44 +40,22 @@ class VoteSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'pessoa', 'candidate', 'timestamp']
 
     def create(self, validated_data):
+        # Since the validations are in the view, simply create the vote
         cpf = validated_data.pop('cpf')
         candidate_id = validated_data.pop('candidate_id')
+        pessoa = Pessoa.objects.get(cpf=cpf)
+        candidate = Candidate.objects.get(id=candidate_id)
 
-        nome = validated_data.get('nome')
-        sobrenome = validated_data.get('sobrenome')
-        telefone = validated_data.get('telefone')
-
-        try:
-            pessoa = Pessoa.objects.get(cpf=cpf)
-        except Pessoa.DoesNotExist:
-            raise serializers.ValidationError({"cpf": "CPF não encontrado."})
-
-        try:
-            candidate = Candidate.objects.get(id=candidate_id)
-        except Candidate.DoesNotExist:
-            raise serializers.ValidationError({"candidate_id": "Candidato não encontrado."})
-
-        # Verifica se a pessoa já votou
-        if pessoa.ja_votou:
-            raise serializers.ValidationError({"detail": "Esta pessoa já votou."})
-
-        # Prepara os dados para criar o voto
-        vote_data = {
-            'pessoa': pessoa,
-            'candidate': candidate,
-            'nome': nome,
-            'sobrenome': sobrenome,
-            'telefone': telefone
-        }
-
-        # Cria o voto
-        vote = Vote.objects.create(**vote_data)
-
-        # Atualiza o status da pessoa para 'já votou'
-        pessoa.ja_votou = True
-        pessoa.save()
+        vote = Vote.objects.create(
+            pessoa=pessoa,
+            candidate=candidate,
+            nome=validated_data.get('nome'),
+            sobrenome=validated_data.get('sobrenome'),
+            telefone=validated_data.get('telefone')
+        )
 
         return vote
+
 
 class VerificationCodeSerializer(serializers.ModelSerializer):
     class Meta:

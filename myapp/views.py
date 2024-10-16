@@ -72,9 +72,13 @@ class VoteViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         cpf = request.data.get('cpf')
+        candidate_id = request.data.get('candidate_id')
 
         if not cpf:
             return Response({"detail": "CPF é obrigatório."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not candidate_id:
+            return Response({"detail": "ID do candidato é obrigatório."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             pessoa = Pessoa.objects.get(cpf=cpf)
@@ -84,6 +88,11 @@ class VoteViewSet(viewsets.ModelViewSet):
         if pessoa.ja_votou:
             return Response({"detail": "Esta pessoa já votou."}, status=status.HTTP_400_BAD_REQUEST)
 
+        try:
+            candidate = Candidate.objects.get(id=candidate_id)
+        except Candidate.DoesNotExist:
+            return Response({"detail": "Candidato com o ID fornecido não existe."}, status=status.HTTP_400_BAD_REQUEST)
+
         # Extract the additional fields
         nome = request.data.get('nome')
         sobrenome = request.data.get('sobrenome')
@@ -92,7 +101,7 @@ class VoteViewSet(viewsets.ModelViewSet):
         # Create the Vote instance
         vote = Vote.objects.create(
             pessoa=pessoa,
-            candidate_id=request.data.get('candidate'),  # Assuming candidate ID is provided
+            candidate=candidate,
             nome=nome,
             sobrenome=sobrenome,
             telefone=telefone
