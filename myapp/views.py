@@ -63,37 +63,48 @@ class CandidateViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Candidate.objects.all()
     serializer_class = CandidateSerializer
 
+# myapp/views.py
+
 class VoteViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet para registrar votos.
-    """
     queryset = Vote.objects.all()
     serializer_class = VoteSerializer
-    permission_classes = [AllowAny]  # Ajuste conforme necessário
+    permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        cpf = serializer.validated_data.get('cpf')
-        
+        cpf = request.data.get('cpf')
+
+        if not cpf:
+            return Response({"detail": "CPF é obrigatório."}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
             pessoa = Pessoa.objects.get(cpf=cpf)
         except Pessoa.DoesNotExist:
             return Response({"detail": "Pessoa com o CPF fornecido não existe."}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         if pessoa.ja_votou:
             return Response({"detail": "Esta pessoa já votou."}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Se a pessoa ainda não votou, registre o voto
-        vote = serializer.save()
-        
-        # Atualize o status da pessoa para indicar que já votou
+
+        # Extract the additional fields
+        nome = request.data.get('nome')
+        sobrenome = request.data.get('sobrenome')
+        telefone = request.data.get('telefone')
+
+        # Create the Vote instance
+        vote = Vote.objects.create(
+            pessoa=pessoa,
+            candidate_id=request.data.get('candidate'),  # Assuming candidate ID is provided
+            nome=nome,
+            sobrenome=sobrenome,
+            telefone=telefone
+        )
+
+        # Update 'ja_votou' status
         pessoa.ja_votou = True
         pessoa.save()
-        
-        # Serializar os dados do voto criado
-        response_data = VoteSerializer(vote).data
-        return Response(response_data, status=status.HTTP_201_CREATED)
+
+        # Serialize the created vote
+        serializer = self.get_serializer(vote)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['get'], url_path='resultados_candidatos')
     def resultados_candidatos(self, request):
